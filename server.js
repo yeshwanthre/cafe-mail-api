@@ -7,10 +7,24 @@ import mailRoutes from "./routes/mailRoutes.js"
 
 const app = express()
 
-app.use(cors())
+app.use(
+  cors({
+    origin: [
+      "https://cafenamasthe.in",
+      "https://www.cafenamasthe.in",
+      "http://localhost:5173",
+    ],
+    methods: ["GET", "POST"],
+  })
+)
+
 app.use(express.json())
 
 app.use("/api/mail", mailRoutes)
+
+app.get("/", (req, res) => {
+  res.send("Cafe Mail API running 🚀")
+})
 
 const PORT = process.env.PORT || 5000
 

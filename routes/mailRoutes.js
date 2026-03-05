@@ -101,7 +101,8 @@ router.post("/catering", async (req, res) => {
   const { name, phone, email, eventDate, guests, message } = req.body
 
   const mailOptions = {
-    from: email,
+    from: process.env.EMAIL_USER,
+    replyTo: email,
     to: process.env.EMAIL_USER,
     subject: "New Catering Request",
     html: `
