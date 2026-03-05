@@ -23,8 +23,8 @@ app.use(express.json())
 
 app.use("/api/mail", mailRoutes)
 
-app.get("/", (req, res) => {
-  res.send("Cafe Mail API running 🚀")
+app.get("/ping", (req, res) => {
+  res.send("pong")
 })
 
 const PORT = process.env.PORT || 5000
