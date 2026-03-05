@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
   res.send("Cafe Mail API running 🚀")
 })
 
-/* KEEP RENDER AWAKE */
+/* KEEP SERVER ALIVE */
 app.get("/ping", (req, res) => {
   res.send("pong")
 })
