@@ -12,17 +12,24 @@ app.use(
     origin: [
       "https://cafenamasthe.in",
       "https://www.cafenamasthe.in",
-      "http://localhost:5173",
+      "http://localhost:5173"
     ],
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type"]
   })
 )
 
 app.use(express.json())
 
+/* API ROUTES */
 app.use("/api/mail", mailRoutes)
 
+/* ROOT CHECK */
+app.get("/", (req, res) => {
+  res.send("Cafe Mail API running 🚀")
+})
+
+/* KEEP RENDER AWAKE */
 app.get("/ping", (req, res) => {
   res.send("pong")
 })

@@ -1,44 +1,22 @@
 import express from "express"
-import nodemailer from "nodemailer"
 import dotenv from "dotenv"
+import { Resend } from "resend"
 
 dotenv.config()
 
 const router = express.Router()
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
-})
+const resend = new Resend(process.env.RESEND_API_KEY)
 
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log("SMTP error:", error)
-  } else {
-    console.log("SMTP server ready")
-  }
-})
-
-/* CONTACT FORM */
 router.post("/contact", async (req, res) => {
+
   try {
 
     const { name, email, phone, message } = req.body
 
-    /* EMAIL TO RESTAURANT */
-
-    const adminMail = {
-      from: process.env.EMAIL_USER,
-      replyTo: email,
-      to: process.env.EMAIL_USER,
+    await resend.emails.send({
+      from: "Cafe Namasthe <onboarding@resend.dev>",
+      to: ["cafenamasthelehi@gmail.com"],
       subject: "New Contact Form Message",
       html: `
         <h3>New Contact Message</h3>
@@ -46,90 +24,29 @@ router.post("/contact", async (req, res) => {
         <p><b>Email:</b> ${email}</p>
         <p><b>Phone:</b> ${phone}</p>
         <p><b>Message:</b> ${message}</p>
-      `,
-    }
+      `
+    })
 
-    await transporter.sendMail(adminMail)
-
-    /* AUTO REPLY TO CUSTOMER */
-
-    const customerReply = {
-      from: process.env.EMAIL_USER,
-      to: email,
+    await resend.emails.send({
+      from: "Cafe Namasthe <onboarding@resend.dev>",
+      to: [email],
       subject: "Thanks for contacting Cafe Namasthe",
       html: `
         <h2>Thank you for contacting Cafe Namasthe!</h2>
-
         <p>Hello ${name},</p>
-
-        <p>
-        We have received your message and our team will get back to you shortly.
-        We appreciate you reaching out to us.
-        </p>
-
-        <p>
-        If your inquiry is urgent, feel free to call us at
-        <b>(385) 287-7544</b>.
-        </p>
-
-        <br/>
-
-        <p>Warm regards,</p>
-        <p><b>Cafe Namasthe Team</b></p>
-        <p>1438 E Main St Suite #12, Lehi, UT</p>
-      `,
-    }
-
-    await transporter.sendMail(customerReply)
+        <p>We received your message and will respond shortly.</p>
+      `
+    })
 
     res.json({ success: true })
 
   } catch (error) {
-  console.error("Mail error:", error.message)
-  res.status(500).json({ success: false, error: error.message })
-}
-})
 
-/* NEWSLETTER */
-router.post("/newsletter", async (req, res) => {
-  const { email } = req.body
+    console.error(error)
+    res.status(500).json({ success: false })
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    replyTo: email,
-    to: process.env.EMAIL_USER,
-    subject: "New Newsletter Subscription",
-    html: `<p>${email} subscribed to mailing list.</p>`,
   }
 
-  await transporter.sendMail(mailOptions)
-
-  res.json({ success: true })
-})
-
-/* CATERING FORM */
-router.post("/catering", async (req, res) => {
-  const { name, phone, email, eventDate, guests, message } = req.body
-
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    replyTo: email,
-    to: process.env.EMAIL_USER,
-    subject: "New Catering Request",
-    html: `
-      <h3>Catering Request</h3>
-      <p><b>Name:</b> ${name}</p>
-      <p><b>Phone:</b> ${phone}</p>
-      <p><b>Email:</b> ${email}</p>
-      <p><b>Event Date:</b> ${eventDate}</p>
-      <p><b>Guests:</b> ${guests}</p>
-      <p><b>Message:</b> ${message}</p>
-    `,
-  }
-
-  await transporter.sendMail(mailOptions)
-
-  res.json({ success: true })
 })
 
 export default router
