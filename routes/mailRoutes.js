@@ -18,7 +18,7 @@ router.post("/contact", async (req, res) => {
     /* EMAIL TO RESTAURANT */
 
     await resend.emails.send({
-      from: "Cafe Namasthe <onboarding@resend.dev>",
+      from: "Cafe Namasthe <contact@cafenamasthe.in>",
       to: ["cafenamasthelehi@gmail.com"],
       subject: "New Contact Form Message",
       html: `
@@ -33,7 +33,7 @@ router.post("/contact", async (req, res) => {
     /* AUTO REPLY TO CUSTOMER */
 
     await resend.emails.send({
-      from: "Cafe Namasthe <onboarding@resend.dev>",
+      from: "Cafe Namasthe <contact@cafenamasthe.in>",
       to: [email],
       subject: "Thanks for contacting Cafe Namasthe",
       html: `
@@ -77,7 +77,7 @@ router.post("/newsletter", async (req, res) => {
     const { email } = req.body
 
     await resend.emails.send({
-      from: "Cafe Namasthe <onboarding@resend.dev>",
+      from: "Cafe Namasthe <contact@cafenamasthe.in>",
       to: ["cafenamasthelehi@gmail.com"],
       subject: "New Newsletter Subscription",
       html: `<p>${email} subscribed to the mailing list.</p>`
@@ -103,7 +103,7 @@ router.post("/catering", async (req, res) => {
     const { name, phone, email, eventDate, guests, message } = req.body
 
     await resend.emails.send({
-      from: "Cafe Namasthe <onboarding@resend.dev>",
+      from: "Cafe Namasthe <contact@cafenamasthe.in>",
       to: ["cafenamasthelehi@gmail.com"],
       subject: "New Catering Request",
       html: `
